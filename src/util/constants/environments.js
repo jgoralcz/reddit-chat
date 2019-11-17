@@ -4,6 +4,4 @@ const env = {
   LOCAL: 'LOCAL',
 };
 
-module.exports = {
-  env,
-};
+module.exports = env;

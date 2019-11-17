@@ -30,16 +30,16 @@ const sendRandomMessage = async (res) => {
   if (message) {
     return res.status(200).send({ message, random: true });
   }
-  throw new Error('Could not generate random response.');
+  return res.send(400).send({ error: 'Could not generate random response.'});
 };
 
-route.post('/', async (req, res) => {
-  const { body } = req;
-  if (!body || !body.text) {
+route.get('/', async (req, res) => {
+  const { query } = req;
+  if (!query || !query.text) {
     return sendRandomMessage(res);
   }
 
-  const { text, limit } = body;
+  const { text, limit } = query;
 
   // first attempt
   let response = await getChatText(text, limit);
@@ -74,10 +74,6 @@ route.post('/', async (req, res) => {
   }
 
   return res.status(200).send({ message: comment, random: false });
-});
-
-route.get('/', async (req, res) => {
-  await sendRandomMessage(res);
 });
 
 module.exports = route;
