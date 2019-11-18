@@ -1,8 +1,8 @@
 const basePath = '/node/config/';
 
 const PATHS = {
-  serverCert: `${basePath}/cert.key`,
-  serverKey: `${basePath}/cert.pem`,
+  serverCert: `${basePath}/cert.pem`,
+  serverKey: `${basePath}/cert.key`,
 };
 
 module.exports = PATHS;
