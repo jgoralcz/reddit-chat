@@ -25,6 +25,8 @@ const generateRandomMessage = async () => {
   return formatText(textUnformattedQuery);
 };
 
+const charLimit = 250;
+
 const sendRandomMessage = async (res) => {
   const message = await generateRandomMessage();
   if (message) {
@@ -41,7 +43,7 @@ route.get('/', async (req, res) => {
 
   const { text: rawText, limit } = query;
 
-  const text = (rawText.length > 250) ? rawText.substring(0, 500).split(' ').pop().join(' ') : rawText;
+  const text = (rawText.length > charLimit) ? rawText.substring(0, 250).split(' ').slice(0, -1).join(' ') : rawText;
 
   // first attempt
   let response = await getChatText(text, limit);
