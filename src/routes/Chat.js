@@ -41,7 +41,7 @@ route.get('/', async (req, res) => {
 
   const { text: rawText, limit } = query;
 
-  const text = (rawText.length > 500) ? rawText.substring(0, 500).split(' ').pop().join(' ') : rawText;
+  const text = (rawText.length > 250) ? rawText.substring(0, 500).split(' ').pop().join(' ') : rawText;
 
   // first attempt
   let response = await getChatText(text, limit);
