@@ -19,12 +19,12 @@ jobs:
 
       - name: Tests where docker registry is at
         shell: bash
-        run: echo ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}
+        run: echo ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}
         id: where_is_it
 
       - name: Tests where github registry is at
         shell: bash
-        run: ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}
+        run: echo ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}
         id: where_is_it_2
 
       - name: Push to Docker Hub
