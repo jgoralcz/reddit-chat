@@ -17,6 +17,16 @@ jobs:
         run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
         id: extract_repo
 
+      - name: Tests where docker registry is at
+        shell: bash
+        run: echo ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}
+        id: where_is_it
+
+      - name: Tests where github registry is at
+        shell: bash
+        run: ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}
+        id: where_is_it_2
+
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
