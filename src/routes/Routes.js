@@ -1,6 +1,6 @@
 const router = require('express-promise-router')();
 const chat = require('./Chat');
 
-router.use('/', chat);
+router.use('/chat', chat);
 
 module.exports = router;

@@ -14,13 +14,13 @@ const errorHandler = (err, req, res, next) => {
       code: err.code,
     },
   } : {
-    error: {
-      name: err.name,
-      stack: err.stack,
-      message: err.message,
-      code: err.code,
-    },
-  };
+      error: {
+        name: err.name,
+        stack: err.stack,
+        message: err.message,
+        code: err.code,
+      },
+    };
 
   return res.status(err.status || 500).json(error);
 };

@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
-
-const { chat_db: chatDB } = require('../../config.json');
+const { chatDB } = require('../util/constants/paths');
 
 const pool = new Pool(chatDB);
 

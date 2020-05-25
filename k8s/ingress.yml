@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: reddit-chat
+  namespace: josh-apps
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: ${HOST_URL}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: reddit-chat
+              servicePort: ${PORT}
+  tls:
+    - hosts:
+        - ${HOST_URL}
+      secretName: ssl-bongo

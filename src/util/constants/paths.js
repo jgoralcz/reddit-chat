@@ -1,8 +1,7 @@
 const basePath = '/node/config/';
 
-const PATHS = {
+module.exports = Object.freeze({
+  chatDB: `${basePath}/db.json`,
   serverCert: `${basePath}/cert.pem`,
   serverKey: `${basePath}/cert.key`,
-};
-
-module.exports = PATHS;
+});

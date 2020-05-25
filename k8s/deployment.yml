@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reddit-chat
+  namespace: josh-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reddit-chat
+  template:
+    metadata:
+      labels:
+        app: reddit-chat
+    spec:
+      nodeSelector:
+        location: na
+      containers:
+        - name: reddit-chat
+          image: jgoralcz/reddit-chat-${ENV}
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: ${PORT}
+            - name: NODE_ENV
+              value: ${ENV}
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 128Mi
+          ports:
+            - containerPort: ${PORT}

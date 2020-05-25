@@ -1,0 +1,39 @@
+# TODO: look into pushing the image to github packages
+name: CI
+on:
+  push:
+    branches: [master, dev]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[ set-output name=branch; ] [ ${GITHUB_REF##*/} == "master" ] && echo "prod" || echo "test""
+        id: extract_branch
+
+      - name: Extract Repo Name
+        shell: bash
+        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
+        id: extract_repo
+
+      - name: Publish to Registry
+        uses: actions/checkout@v2
+        id: registry_publish
+
+      - run: |
+          "echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin registry.hub.docker.com"
+          "docker build --no-cache --pull -t ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.branch }}/${{ steps.extract_branch.outputs.branch }}:latest ."
+          "docker push ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.branch }}/${{ steps.extract_branch.outputs.branch }}:/latest"
+  # test:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: ${{ secrets.KUBECONFIG }}/.kube/config
+    steps:
+      - name: Deploys to Kubernetes
+      - uses: actions/checkout@v2
+      - run: |
+          "mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.KUBECONFIG}}' > $KUBECONFIG"
+      - run: "kubectl version"
