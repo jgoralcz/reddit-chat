@@ -31,5 +31,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: my-org/my-repo/my-image
+          repository: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}/${{ steps.extract_branch.outputs.branch }}
           tag_with_ref: true
