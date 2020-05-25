@@ -50,7 +50,7 @@ jobs:
 
       - name: Setup Kubectl
         run: |
-          "$ENV=${{ steps.extract_environment.outputs.env }}"
+          "ENV=${{ steps.extract_environment.outputs.env }}"
           "mkdir -p '${{ github.workspace }}/.kube' \
           && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
