@@ -9,12 +9,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Extract Branch Name
         shell: bash
-        run: echo "##[ set-output name=branch; ] [ ${GITHUB_REF##*/} == "master" ] && echo "prod" || echo "test""
+        run: echo "##[ set-output name=branch; ] $(echo [ ${GITHUB_REF##*/} == "master" ] "prod" || "test")"
         id: extract_branch
 
       - name: Extract Repo Name
         shell: bash
-        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
+        run: echo "##[ set-output name=repo; ] $(echo ${GITHUB_REPOSITORY##*/})"
         id: extract_repo
 
       - name: Tests where docker registry is at
