@@ -29,7 +29,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      KUBECONFIG: ${{ secrets.KUBECONFIG }}/.kube/config
+      KUBECONFIG: ${{ github.workspace }}/.kube/config
     steps:
       - name: Deploys to Kubernetes
       - uses: actions/checkout@v2
