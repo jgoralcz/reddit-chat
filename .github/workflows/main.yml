@@ -49,11 +49,10 @@ jobs:
           tags: ${{ steps.extract_environment.outputs.env }}
 
       - name: Setup Kubectl
-      - uses: actions/checkout@v2
-      - run: |
+        run: |
           "$ENV=${{ steps.extract_environment.outputs.env }}"
           "mkdir -p '${{ github.workspace }}/.kube' \
           && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
       - name: Kubectl Version
-      - run: "kubectl version"
+        run: "kubectl version"
