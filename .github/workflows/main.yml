@@ -54,10 +54,7 @@ jobs:
 
       - name: Setup kubectl
         run: |
-          "echo $ENV \
-          && mkdir -p ~/.kube \
-          && touch $KUBECONFIG \
-          && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
+          "echo $ENV"
 
       - name: Kubectl Version
         run: "kubectl version"
