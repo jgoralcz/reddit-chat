@@ -52,9 +52,9 @@ jobs:
         shell: bash
         run: |
           echo ${{ env.KUBECONFIG }} \
-          && echo $KUBECONFIG
+          && echo $KUBECONFIG_TESTING
         env:
-          KUBECONFIG: $KUBECONFIG
+          KUBECONFIG_TESTING: $KUBECONFIG
 
       - name: Kubectl Version
         run: "kubectl version"
