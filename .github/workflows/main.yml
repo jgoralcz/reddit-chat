@@ -52,5 +52,5 @@ jobs:
         shell: bash
         run: |
           mkdir -p ${{ env.KUBECONFIG }} \
-            && echo '${{ secrets.KUBECONFIG }}' | base64 -d > ${{ env.KUBECONFIG }}/config \
+            && echo "${{ secrets.KUBECONFIG }}" | base64 -d > ${{ env.KUBECONFIG }}/config \
             && kubectl version
