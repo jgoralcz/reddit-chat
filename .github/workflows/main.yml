@@ -56,8 +56,7 @@ jobs:
         shell: bash
         run: |
           "echo $ENV \
-          && mkdir -p '~/.kube' \
-          && touch $KUBECONFIG"
+          && mkdir -p '~/.kube'"
 
       - name: Kubectl Version
         run: "kubectl version"
