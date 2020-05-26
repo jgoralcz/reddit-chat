@@ -55,6 +55,7 @@ jobs:
       - name: Setup kubectl
         run: |
           "mkdir -p '${{ github.workspace }}/.kube' \
+          && touch $KUBECONFIG \
           && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
       - name: Kubectl Version
