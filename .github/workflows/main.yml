@@ -5,7 +5,7 @@ on:
 jobs:
   deploy:
     env:
-      KUBECONFIG: ~/.kube/config
+      KUBECONFIG: ~/.kube/
       PORT: 8443
       HOST_URL: ${{ secrets.HOST_URL }}
     runs-on: ubuntu-latest
