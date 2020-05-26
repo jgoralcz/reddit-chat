@@ -5,7 +5,7 @@ on:
 jobs:
   deploy:
     env:
-      KUBECONFIG: ${{ github.workspace }}/.kube/config
+      KUBECONFIG: ~/.kube/config
       PORT: 8443
       HOST_URL: ${{ secrets.HOST_URL }}
     runs-on: ubuntu-latest
@@ -54,7 +54,8 @@ jobs:
 
       - name: Setup kubectl
         run: |
-          "mkdir -p '${{ github.workspace }}/.kube' \
+          "echo $ENV \
+          && mkdir -p ~/.kube \
           && touch $KUBECONFIG \
           && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
