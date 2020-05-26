@@ -4,10 +4,6 @@ on:
     branches: [master, dev]
 jobs:
   deploy:
-    env:
-      KUBECONFIG_FOLDER: ~/.kube
-      PORT: 8443
-      HOST_URL: ${{ secrets.HOST_URL }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,19 +17,47 @@ jobs:
         run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
         id: extract_repo
 
-      - name: Tests where docker registry is at
+      - name: Build Host URL
         shell: bash
-        run: echo ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
-        id: where_is_it
+        run: echo "##[set-output name=url;]$([${GITHUB_REF##*/} == "master"] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
+        id: extract_host_url
 
-      - name: Tests where github registry is at
-        shell: bash
-        run: echo ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
-        id: where_is_it_2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}
+          tags: ${{ steps.extract_environment.outputs.env }}
+
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}/${{ steps.extract_repo.outputs.repo }}
+          tags: ${{ steps.extract_environment.outputs.env }}
 
       - name: Setup kubectl
         shell: bash
         run: |
           mkdir -p ${{ env.KUBECONFIG_FOLDER }} \
-            && echo "${{ secrets.KUBECONFIG}}" | base64 -d > ${{ env.KUBECONFIG_FOLDER }}/config \
-            && kubectl version
+            && echo "${{ secrets.KUBECONFIG}}" | base64 -d > ${{ env.KUBECONFIG_FOLDER }}/config
+        env:
+          KUBECONFIG_FOLDER: ~/.kube
+
+      - name: Deploy to Kubernetes
+        shell: bash
+        run: |
+          kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${IMAGE_LOCATION} || echo "$SERVICE_NAME deployment not found"\
+          && envsubst < k8s/ingress.yml | kubectl apply -f - \
+          && envsubst < k8s/service.yml | kubectl apply -f - \
+          && envsubst < k8s/deployment.yml | kubectl apply -f - \
+          && kubectl rollout restart deployment/${SERVICE_NAME}
+        env:
+          ENV: ${{ steps.extract_environment.outputs.env }}
+          IMAGE_LOCATION: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}/${{ steps.extract_environment.outputs.env }}
+          SERVICE_NAME: ${{ steps.extract_repo.outputs.repo }}
+          PORT: 8443
+          HOST_URL: ${{ steps.extract_host_url.outputs.url }}

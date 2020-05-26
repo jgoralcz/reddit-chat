@@ -17,7 +17,7 @@ spec:
         location: na
       containers:
         - name: reddit-chat
-          image: jgoralcz/reddit-chat-${ENV}
+          image: ${IMAGE_LOCATION}
           imagePullPolicy: Always
           env:
             - name: PORT
@@ -33,3 +33,11 @@ spec:
               memory: 128Mi
           ports:
             - containerPort: ${PORT}
+          volumeMounts:
+            - name: db
+              mountPath: /node/config/db.json
+              subPath: db.json
+      volumes:
+        - name: db
+          secret:
+            secretName: db-reddit-comments.json
