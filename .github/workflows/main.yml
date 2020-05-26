@@ -5,7 +5,6 @@ on:
 jobs:
   deploy:
     env:
-      KUBECONFIG: ~/.kube/config
       PORT: 8443
       HOST_URL: ${{ secrets.HOST_URL }}
     runs-on: ubuntu-latest
@@ -51,9 +50,9 @@ jobs:
       - name: Setup kubectl
         shell: bash
         run: |
-          echo $KUBECONFIG \
-          && mkdir -p ~/.kube/ \
-          && echo '1234' > ${KUBECONFIG}
+          echo $KUBECONFIG
+        env:
+          KUBECONFIG: ~/.kube/config
 
       - name: Kubectl Version
         run: "kubectl version"
