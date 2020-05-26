@@ -52,7 +52,7 @@ jobs:
         run: |
           echo $KUBECONFIG
         env:
-          KUBECONFIG: ~/.kube/config
+          KUBECONFIG: $KUBECONFIG
 
       - name: Kubectl Version
         run: "kubectl version"
