@@ -50,7 +50,7 @@ jobs:
 
       - name: Setup kubectl
         shell: bash
-        run: "mkdir -p ~/.kube/"
+        run: "mkdir -p ~/.kube/ && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
       - name: Kubectl Version
         run: "kubectl version"
