@@ -55,8 +55,7 @@ jobs:
       - name: Setup kubectl
         shell: bash
         run: |
-          "echo $ENV \
-          && mkdir -p '~/.kube'"
+          "echo $ENV"
 
       - name: Kubectl Version
         run: "kubectl version"
