@@ -53,8 +53,12 @@ jobs:
         run: "ENV=${{ steps.extract_environment.outputs.env }}"
 
       - name: Setup kubectl
+        shell: bash
         run: |
-          "echo $ENV"
+          "echo $ENV \
+          && mkdir -p '/.kube' \
+          && touch $KUBECONFIG \
+          && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG"
 
       - name: Kubectl Version
         run: "kubectl version"
