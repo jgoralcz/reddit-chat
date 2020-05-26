@@ -36,4 +36,4 @@ jobs:
         run: |
           mkdir -p ${{ env.KUBECONFIG_FOLDER }} \
             && echo "${{ secrets.KUBECONFIG}}" | base64 -d > ${{ env.KUBECONFIG_FOLDER }}/config \
-            && kubectl version --kubeconfig ${{ env.KUBECONFIG_FOLDER }}/config
+            && kubectl version
