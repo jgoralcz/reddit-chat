@@ -48,14 +48,9 @@ jobs:
           repository: ${{ github.actor }}/${{ steps.extract_repo.outputs.repo }}/${{ steps.extract_repo.outputs.repo }}
           tags: ${{ steps.extract_environment.outputs.env }}
 
-      - name: Setup variable
-        shell: bash
-        run: "ENV=${{ steps.extract_environment.outputs.env }}"
-
       - name: Setup kubectl
         shell: bash
-        run: |
-          "echo $ENV"
+        run: "mkdir -p ~/.kube/"
 
       - name: Kubectl Version
         run: "kubectl version"
