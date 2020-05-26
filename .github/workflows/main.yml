@@ -51,7 +51,8 @@ jobs:
       - name: Setup kubectl
         shell: bash
         run: |
-          mkdir -p ~/.kube/ \
+          echo $KUBECONFIG \
+          && mkdir -p ~/.kube/ \
           && echo '1234' > ${KUBECONFIG}
 
       - name: Kubectl Version
