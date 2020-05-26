@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/.kube/ \
-          && echo '${{ secrets.KUBECONFIG }}' > $KUBECONFIG
+          && echo '1234' > $KUBECONFIG
 
       - name: Kubectl Version
         run: "kubectl version"
