@@ -53,6 +53,4 @@ jobs:
         run: |
           mkdir -p ${{ env.KUBECONFIG }} \
             && echo '${{ secrets.KUBECONFIG }}' > ${{ env.KUBECONFIG }}/config
-
-      - name: Kubectl Version
-        run: "kubectl version"
+            && kubectl version
