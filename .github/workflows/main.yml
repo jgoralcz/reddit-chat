@@ -57,7 +57,7 @@ jobs:
           && kubectl rollout restart deployment/${SERVICE_NAME}
         env:
           ENV: ${{ steps.extract_environment.outputs.env }}
-          IMAGE_LOCATION: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}/${{ steps.extract_environment.outputs.env }}
+          IMAGE_LOCATION: ${{ secrets.DOCKER_USERNAME }}/${{ steps.extract_repo.outputs.repo }}:${{ steps.extract_environment.outputs.env }}
           SERVICE_NAME: ${{ steps.extract_repo.outputs.repo }}
           PORT: 8443
           HOST_URL: ${{ steps.extract_host_url.outputs.url }}
