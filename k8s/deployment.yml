@@ -35,6 +35,7 @@ spec:
             - containerPort: 8443
           volumeMounts:
             - name: db
+              readOnly: true
               mountPath: /node/config/db.json
               subPath: db.json
       volumes:
