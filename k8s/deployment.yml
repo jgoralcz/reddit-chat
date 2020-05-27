@@ -32,7 +32,7 @@ spec:
               cpu: 200m
               memory: 128Mi
           ports:
-            - containerPort: ${PORT}
+            - containerPort: 8443
           volumeMounts:
             - name: db
               mountPath: /node/config/db.json

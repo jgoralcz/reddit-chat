@@ -6,6 +6,6 @@ metadata:
 spec:
   ports:
     - targetPort: ${PORT}
-      port: ${PORT}
+      port: 8443
   selector:
     app: reddit-chat
