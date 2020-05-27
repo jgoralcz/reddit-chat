@@ -1,4 +1,4 @@
-name: CI
+name: Security Scan
 on:
   push:
     branches: [master, dev]
@@ -30,7 +30,7 @@ jobs:
         with:
           image-reference: "localbuild/testimage:latest"
           dockerfile-path: "./Dockerfile"
-          fail-build: true
+          fail-build: false
           include-app-packages: true
 
       - name: anchore inline scan JSON results
