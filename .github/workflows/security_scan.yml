@@ -1,0 +1,37 @@
+name: CI
+on:
+  push:
+    branches: [master, dev]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract environment
+        shell: bash
+        run: echo "##[set-output name=env;]$([ ${GITHUB_REF##*/} == "master" ] echo "prod" || echo "beta")"
+        id: extract_environment
+
+      - name: Extract Repo Name
+        shell: bash
+        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
+        id: extract_repo
+
+      - name: Build Host URL
+        shell: bash
+        run: echo "##[set-output name=url;]$([ ${GITHUB_REF##*/} == "master" ] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
+        id: extract_host_url
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag localbuild/testimage:latest
+
+      - name: Scan image
+        uses: anchore/scan-action@master
+        with:
+          image-reference: "localbuild/testimage:latest"
+          dockerfile-path: "./Dockerfile"
+          fail-build: true
+          include-app-packages: true
+
+      - name: anchore inline scan JSON results
+        run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
