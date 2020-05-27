@@ -3,7 +3,7 @@ on:
   push:
     branches: [master, dev]
 jobs:
-  deploy:
+  docker_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

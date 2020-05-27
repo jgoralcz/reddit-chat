@@ -3,13 +3,13 @@ on:
   push:
     branches: [master, dev]
 jobs:
-  deploy:
+  security_scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Extract environment
         shell: bash
-        run: echo "##[set-output name=env;]$([ ${GITHUB_REF##*/} == "master" ] echo "prod" || echo "beta")"
+        run: echo "##[set-output name=env;]$([ "${GITHUB_REF##*/}" == "master" ] echo "prod" || echo "beta")"
         id: extract_environment
 
       - name: Extract Repo Name
@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Host URL
         shell: bash
-        run: echo "##[set-output name=url;]$([ ${GITHUB_REF##*/} == "master" ] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
+        run: echo "##[set-output name=url;]$([ "${GITHUB_REF##*/}" == "master" ] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
         id: extract_host_url
 
       - name: Build the Docker image
