@@ -21,9 +21,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: PORT
-              value: ${PORT}
+              value: "${PORT}"
             - name: NODE_ENV
-              value: ${ENV}
+              value: "${ENV}"
           resources:
             limits:
               cpu: 500m
