@@ -1,6 +1,5 @@
 const bodyparser = require('body-parser');
 const express = require('express');
-const hsts = require('hsts');
 const logger = require('log4js').getLogger();
 const { errorHandler } = require('./middleware/ErrorHandler');
 const { limiter } = require('./middleware/Limit');
@@ -14,7 +13,6 @@ const env = process.env.NODE_ENV || LOCAL;
 
 const server = express();
 
-server.use(hsts({ maxAge: 31536000 }));
 server.use(limiter);
 server.use(bodyparser.urlencoded({ extended: true }));
 server.use(bodyparser.json());
