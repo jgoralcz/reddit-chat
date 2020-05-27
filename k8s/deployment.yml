@@ -36,7 +36,7 @@ spec:
           volumeMounts:
             - name: db
               readOnly: true
-              mountPath: /node/config/db.json
+              mountPath: /node/config/
               subPath: db.json
       volumes:
         - name: db
