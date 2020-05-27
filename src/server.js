@@ -4,7 +4,7 @@ const logger = require('log4js').getLogger();
 const { errorHandler } = require('./middleware/ErrorHandler');
 const { limiter } = require('./middleware/Limit');
 const { httpLogger } = require('./middleware/Logger');
-const { LOCAL, } = require('./util/constants/environments');
+const { LOCAL } = require('./util/constants/environments');
 const router = require('./routes/Routes');
 
 logger.level = 'info';

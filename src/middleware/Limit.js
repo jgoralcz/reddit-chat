@@ -14,7 +14,7 @@ const authentication = (auth) => {
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
-  skip(req, _) {
+  skip(req) {
     if (!req || !req.headers || !req.headers.authorization) return false;
 
     const { login, password } = authentication(req.headers.authorization);
