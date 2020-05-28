@@ -9,17 +9,17 @@ jobs:
       - uses: actions/checkout@v2
       - name: Extract Environment
         shell: bash
-        run: echo "##[set-output name=env;] $([ "${GITHUB_REF##*/}" == "master" ] echo "prod" || echo "beta")"
+        run: echo "##[set-output name=env;]$([ "${GITHUB_REF##*/}" == "master" ] echo "prod" || echo "beta")"
         id: extract_environment
 
       - name: Extract Repo Name
         shell: bash
-        run: echo "##[set-output name=repo;] $(echo ${GITHUB_REPOSITORY##*/})"
+        run: echo "##[set-output name=repo;]$(echo ${GITHUB_REPOSITORY##*/})"
         id: extract_repo
 
       - name: Build Host URL
         shell: bash
-        run: echo "##[set-output name=url;] $([ "${GITHUB_REF##*/}" == "master" ] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
+        run: echo "##[set-output name=url;]$([ "${GITHUB_REF##*/}" == "master" ] echo ${{ secrets.HOST_URL }} || echo "beta-${{ secrets.HOST_URL }}")"
         id: extract_host_url
 
       - name: Push to GitHub Packages
