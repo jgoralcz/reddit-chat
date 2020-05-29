@@ -38,6 +38,8 @@ spec:
               readOnly: true
               mountPath: /node/config/db.json
               subPath: db.json
+      imagePullSecrets:
+        - name: github-registry
       volumes:
         - name: db
           secret:
