@@ -3,6 +3,7 @@ const { chatDB } = require('../util/constants/paths');
 const nconf = require('nconf').file('chatDB', chatDB);
 
 const chat_db = nconf.get('chat_db');
+console.log(chat_db);
 
 const pool = new Pool(chat_db);
 
