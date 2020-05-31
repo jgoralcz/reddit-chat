@@ -15,7 +15,8 @@ const pool = new Pool(chat_db);
 const poolQuery = async (query, paramsArray) => {
   const client = await pool.connect();
   try {
-    return await client.query(query, paramsArray);
+    return undefined;
+    // return await client.query(query, paramsArray);
   } finally {
     client.release();
   }
