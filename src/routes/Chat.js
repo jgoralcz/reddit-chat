@@ -36,6 +36,7 @@ const sendRandomMessage = async (res) => {
 };
 
 route.get('/', async (req, res) => {
+  console.log('debugging is fun');
   const { query } = req;
   if (!query || !query.text) {
     return sendRandomMessage(res);
@@ -49,12 +50,15 @@ route.get('/', async (req, res) => {
   let response = await getChatText(text, limit);
   let comment = formatText(response);
 
+  console.log('debugging is fun2');
+
   // second attempt, autocorrect everything we can
   if (!comment || comment.length <= 0) {
     const args = text.split(' ');
     const autoCorrectedText = args.map((a) => autocorrect(a.toLowerCase()));
     response = await getChatText(autoCorrectedText.join(' '), limit);
     comment = formatText(response);
+    console.log('debugging is fun3');
 
     // third attempt, keep the autocorrect, but remove anything that seems weird
     if (!comment || comment.length <= 0) {
@@ -63,6 +67,7 @@ route.get('/', async (req, res) => {
       const prom = await Promise.all(promises.map((p => p.catch(e => e))).filter(p => p != null));
       response = await getChatText(prom.join(' '), limit);
       comment = formatText(response);
+      console.log('debugging is fun4');
 
       // final attempt, remove half of the end.
       if (!comment || comment.length <= 0) {
