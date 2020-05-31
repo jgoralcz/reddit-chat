@@ -1,7 +1,10 @@
 const { Pool } = require('pg');
-const { chatDB: { chat_db: db } } = require('../util/constants/paths');
+const { chatDB } = require('../util/constants/paths');
+const nconf = require('nconf').file('chatDB', chatDB);
 
-const pool = new Pool(db);
+const chat_db = nconf.get('chat_db');
+
+const pool = new Pool(chat_db);
 
 /**
  * pool query function
