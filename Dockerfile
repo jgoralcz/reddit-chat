@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:12-buster
 
 LABEL owner = jgoralcz
 LABEL serviceVersion = 0.1.0
