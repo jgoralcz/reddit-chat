@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const { chatDB } = require('../util/constants/paths');
-const nconf = require('nconf').file('chatDB', chatDB);
 
+const nconf = require('nconf').file('chatDB', chatDB);
 const chat_db = nconf.get('chat_db');
 
 const pool = new Pool(chat_db);
@@ -15,8 +15,7 @@ const pool = new Pool(chat_db);
 const poolQuery = async (query, paramsArray) => {
   const client = await pool.connect();
   try {
-    return undefined;
-    // return await client.query(query, paramsArray);
+    return await client.query(query, paramsArray);
   } finally {
     client.release();
   }
