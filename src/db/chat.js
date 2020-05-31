@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
-const { chatDB } = require('../util/constants/paths');
+const { chatDB: { chat_db: db } } = require('../util/constants/paths');
 
-const pool = new Pool(chatDB);
+const pool = new Pool(db);
 
 /**
  * pool query function
@@ -12,7 +12,7 @@ const pool = new Pool(chatDB);
 const poolQuery = async (query, paramsArray) => {
   const client = await pool.connect();
   try {
-    return await client.query(query, paramsArray);
+    return client.query(query, paramsArray);
   } finally {
     client.release();
   }
