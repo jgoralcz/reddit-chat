@@ -61,6 +61,6 @@ jobs:
           -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
           -H "Content-Type: application/json" \
-          --data '{"type":"A","name":"test2.bongo.best","content":"${{ secrets.HA_PROXY_IP }}","ttl":1,"proxied":true}'
+          --data '{"type":"A","name":"$HOST_URL","content":"${{ secrets.HA_PROXY_IP }}","ttl":1,"proxied":true}'
         env:
           HOST_URL: ${{ steps.extract_prefix.outputs.prefix }}${{ secrets.HOST_URL }}
