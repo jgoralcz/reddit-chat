@@ -32,7 +32,7 @@ const sendRandomMessage = async (res) => {
   if (message) {
     return res.status(200).send({ message, random: true });
   }
-  return res.send(400).send({ error: 'Could not generate random response.'});
+  return res.send(400).send({ error: 'Could not generate random response.' });
 };
 
 route.get('/', async (req, res) => {

@@ -21,11 +21,11 @@
     "express": "^4.17.1",
     "express-promise-router": "^3.0.3",
     "express-rate-limit": "^5.0.0",
-    "hsts": "^2.2.0",
     "html-entities": "^1.2.1",
     "https": "^1.0.0",
     "log4js": "^5.1.0",
-    "pg": "^7.12.1",
+    "nconf": "^0.10.0",
+    "pg": "^7.18.2",
     "simple-spellchecker": "^0.9.9"
   }
 }

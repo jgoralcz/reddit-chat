@@ -1,5 +1,5 @@
 const rateLimit = require('express-rate-limit');
-const { loginAdmin, passwordAdmin } = require('../../config.json');
+const { loginAdmin, passwordAdmin } = require('../util/constants/paths');
 
 const authentication = (auth) => {
   const b64auth = (auth || '').split(' ')[1] || '';
@@ -14,7 +14,7 @@ const authentication = (auth) => {
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
-  skip(req, _) {
+  skip(req) {
     if (!req || !req.headers || !req.headers.authorization) return false;
 
     const { login, password } = authentication(req.headers.authorization);
