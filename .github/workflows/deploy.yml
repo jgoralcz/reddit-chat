@@ -57,15 +57,22 @@ jobs:
       - name: Deploy HOST_URL to Cloudflare
         shell: bash
         run: |
-          DNS_RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records?type=A&name=$HOST_URL" \
-          -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
-          -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
-          -H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id') && \
-
-          curl --fail -s -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/$DNS_RECORD_ID" \
+          curl --fail -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records" \
           -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
           -H "Content-Type: application/json" \
-          --data '{"type":"A","name":"$HOST_URL","content":"${{ secrets.HA_PROXY_IP }}","ttl":1,"proxied":true}' || echo "Failed updating dns record"
+          --data '{"type":"A","name":"$HOST_URL","content":"${{ secrets.HA_PROXY_IP }}","ttl":1,"proxied":true}' || ( \
+
+            DNS_RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records?type=A&name=$HOST_URL" \
+            -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
+            -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
+            -H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id') && echo $DNS_RECORD_ID && \
+
+            curl --fail -s -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/$DNS_RECORD_ID" \
+            -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
+            -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"type":"A","name":"$HOST_URL","content":"${{ secrets.HA_PROXY_IP }}","ttl":1,"proxied":true}' || echo "Failed updating dns record"
+          )
         env:
           HOST_URL: ${{ steps.extract_prefix.outputs.prefix }}${{ secrets.HOST_URL }}
