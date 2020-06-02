@@ -57,7 +57,7 @@ jobs:
       - name: Deploy HOST_URL to Cloudflare
         shell: bash
         run: |
-          curl -s -X --fail POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records" \
+          curl --fail -X --fail POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records" \
           -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
           -H "Content-Type: application/json" \
@@ -68,7 +68,7 @@ jobs:
             -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
             -H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id') && \
             
-            curl -s -X --fail PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID}}/dns_records/$DNS_RECORD_ID" \
+            curl --fail -s -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/$DNS_RECORD_ID" \
             -H "X-Auth-Email: ${{ secrets.CLOUDFLARE_EMAIL }}" \
             -H "X-Auth-Key: ${{ secrets.CLOUDFLARE_TOKEN }}" \
             -H "Content-Type: application/json" \
