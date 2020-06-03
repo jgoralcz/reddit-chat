@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reddit-chat
+  name: ${SERVICE_NAME}
   namespace: josh-apps
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: reddit-chat
+      app: ${SERVICE_NAME}
   template:
     metadata:
       labels:
-        app: reddit-chat
+        app: ${SERVICE_NAME}
     spec:
       nodeSelector:
         location: na
       containers:
-        - name: reddit-chat
+        - name: ${SERVICE_NAME}
           image: ${IMAGE_LOCATION}
           imagePullPolicy: Always
           env:
