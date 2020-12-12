@@ -5,19 +5,17 @@ const autocorrect = require('autocorrect')();
 const { formatText } = require('../util/formatter');
 const { getChatText, getRandomChatText } = require('../db/chat');
 
+const charLimit = 250;
+
+const dictionary = SpellChecker.getDictionarySync('en-US');
+
 const spellCheck = (word) => new Promise((resolve, reject) => {
-  SpellChecker.getDictionary('en-US', (err, dictionary) => {
-    if (!err) {
-      const misspelled = dictionary.isMisspelled(word);
-      if (misspelled) {
-        reject(new Error('misspelled'));
-      } else {
-        resolve(word);
-      }
-    } else {
-      reject(err);
-    }
-  });
+  const misspelled = dictionary.isMisspelled(word);
+  if (misspelled) {
+    reject(new Error('misspelled'));
+  } else {
+    resolve(word);
+  }
 });
 
 const generateRandomMessage = async () => {
@@ -25,13 +23,9 @@ const generateRandomMessage = async () => {
   return formatText(textUnformattedQuery);
 };
 
-const charLimit = 250;
-
 const sendRandomMessage = async (res) => {
   const message = await generateRandomMessage();
-  if (message) {
-    return res.status(200).send({ message, random: true });
-  }
+  if (message) return res.status(200).send({ message, random: true });
   return res.send(400).send({ error: 'Could not generate random response.' });
 };
 
@@ -42,42 +36,48 @@ route.get('/', async (req, res) => {
   }
 
   const { text: rawText, limit } = query;
+  const maxLimit = (!limit || isNaN(limit) || limit <= 0 || limit > 20) ? 20 : 1;
 
   const text = (rawText.length > charLimit) ? rawText.substring(0, 250).split(' ').slice(0, -1).join(' ') : rawText;
 
   // first attempt
-  let response = await getChatText(text, limit);
-  let comment = formatText(response);
+  const firstResponse = await getChatText(text, maxLimit);
+  const firstComment = formatText(firstResponse);
+
+  if (firstComment && firstComment.length > 0) {
+    return res.status(200).send({ message: firstComment, random: false });
+  }
 
   // second attempt, autocorrect everything we can
-  if (!comment || comment.length <= 0) {
-    const args = text.split(' ');
-    const autoCorrectedText = args.map((a) => autocorrect(a.toLowerCase()));
-    response = await getChatText(autoCorrectedText.join(' '), limit);
-    comment = formatText(response);
+  const args = text.split(' ');
+  const autoCorrectedText = args.map((a) => autocorrect(a.toLowerCase()));
+  const secondResponse = await getChatText(autoCorrectedText.join(' '), maxLimit);
+  const secondCommentAutocorrect = formatText(secondResponse);
+  if (secondCommentAutocorrect && secondCommentAutocorrect.length > 0) {
+    return res.status(200).send({ message: secondCommentAutocorrect, random: false });
+  }
 
-    // third attempt, keep the autocorrect, but remove anything that seems weird
-    if (!comment || comment.length <= 0) {
-      const promises = autoCorrectedText.map((p) => spellCheck(p));
-      // eslint-disable-next-line arrow-parens
-      const prom = await Promise.all(promises.map((p => p.catch(e => e))).filter(p => p != null));
-      response = await getChatText(prom.join(' '), limit);
-      comment = formatText(response);
+  // third attempt, keep the autocorrect, but remove anything that seems weird
+  const promises = autoCorrectedText.map((p) => spellCheck(p));
+  // eslint-disable-next-line arrow-parens
+  const prom = await Promise.all(promises.map((p => p.catch(e => e))).filter(p => p != null));
 
-      // final attempt, remove half of the end.
-      if (!comment || comment.length <= 0) {
-        response = await getChatText(prom.slice(0, Math.ceil(prom.length / 2)), limit);
-        comment = formatText(response);
-      }
-    }
+
+  const thirdResponse = await getChatText(prom.join(' '), maxLimit);
+  const thirdCommentAutocorrectRemoval = formatText(thirdResponse);
+  if (thirdCommentAutocorrectRemoval && thirdCommentAutocorrectRemoval.length > 0) {
+    return res.status(200).send({ message: thirdCommentAutocorrectRemoval, random: false });
+  }
+
+  // final attempt, remove half of the end.
+  const finalAttempt = await getChatText(prom.slice(0, Math.ceil(prom.length / 2)), maxLimit);
+  const finalComment = formatText(finalAttempt);
+  if (finalComment && finalComment.length > 0) {
+    return res.status(200).send({ message: finalComment, random: false });
   }
 
   // finally send a random message, if we couldn't find one.
-  if (!comment || comment.length <= 0) {
-    return sendRandomMessage(res);
-  }
-
-  return res.status(200).send({ message: comment, random: false });
+  return sendRandomMessage(res);
 });
 
 module.exports = route;

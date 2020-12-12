@@ -1,21 +1,26 @@
-CREATE TABLE IF NOT EXISTS comments (
-  parent_id text NOT NULL,
-  comment_id text NOT NULL,
-  comment varchar(256) NOT NULL,
-  subreddit text NOT NULL,
-  subreddit_id text NOT NULL,
-  created_utc bigint NOT NULL,
-  controversiality bigint NOT NULL,
-  score bigint NOT NULL,
-  id text NOT NULL,
-  tsv tsvector NOT NULL
+CREATE TABLE public.comments (
+    parent_id text NOT NULL,
+    comment_id text NOT NULL,
+    comment character varying(256),
+    subreddit_id text NOT NULL,
+    created_utc bigint,
+    score integer NOT NULL,
+    tsv tsvector
 );
 
-CREATE INDEX IF NOT EXISTS idx_comment_id ON comments(comment_id);
-CREATE INDEX IF NOT EXISTS idx_parent_id ON comments(parent_id);
-CREATE INDEX IF NOT EXISTS idx_subreddit_id ON comments(subreddit_id);
-CREATE INDEX IF NOT EXISTS tsv_idx ON comments USING gin(tsv);
+    
+CREATE INDEX idx_comment_id ON public.comments USING btree (comment_id);
+CREATE INDEX idx_parent_id ON public.comments USING btree (parent_id);
+CREATE INDEX idx_subreddit_id ON public.comments USING btree (subreddit_id);
+CREATE INDEX tsv_idx ON public.comments USING gin (tsv);
 
--- insert your data then generate the tsv, create a trigger if you plan on adding more data.
--- for more info check out: 
--- https://blog.lateral.io/2015/05/full-text-search-in-milliseconds-with-postgresql/
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT subreddit_id_fk FOREIGN KEY (subreddit_id) REFERENCES public.subreddit(id) ON DELETE CASCADE;
+
+CREATE TABLE public.subreddit (
+    id text NOT NULL,
+    name text
+);
+
+ALTER TABLE ONLY public.subreddit
+    ADD CONSTRAINT subreddit_pk PRIMARY KEY (id);

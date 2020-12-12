@@ -2,7 +2,6 @@ const bodyparser = require('body-parser');
 const express = require('express');
 const logger = require('log4js').getLogger();
 const { errorHandler } = require('./middleware/ErrorHandler');
-const { limiter } = require('./middleware/Limit');
 const { httpLogger } = require('./middleware/Logger');
 const { LOCAL } = require('./util/constants/environments');
 const router = require('./routes/Routes');
@@ -13,7 +12,6 @@ const env = process.env.NODE_ENV || LOCAL;
 
 const server = express();
 
-server.use(limiter);
 server.use(bodyparser.urlencoded({ extended: true }));
 server.use(bodyparser.json());
 server.use(httpLogger());
