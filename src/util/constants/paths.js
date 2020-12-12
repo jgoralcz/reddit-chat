@@ -1,5 +1,3 @@
-const basePath = '/node/config/';
+const config = require('/node/config/db.json');
 
-module.exports = Object.freeze({
-  chatDB: `${basePath}/db.json`,
-});
+module.exports = config;
