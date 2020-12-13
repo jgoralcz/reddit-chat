@@ -60,20 +60,28 @@ route.get('/', async (req, res) => {
   // third attempt, keep the autocorrect, but remove anything that seems weird
   const promises = autoCorrectedText.map((p) => spellCheck(p));
   // eslint-disable-next-line arrow-parens
-  const prom = await Promise.all(promises.map((p => p.catch(e => e))).filter(p => p != null));
+  const wordArray = await Promise.all(promises.map((p => p.catch(e => e))).filter(p => p != null));
 
 
-  const thirdResponse = await getChatText(prom.join(' '), maxLimit);
+  const thirdResponse = await getChatText(wordArray.join(' '), maxLimit);
   const thirdCommentAutocorrectRemoval = formatText(thirdResponse);
   if (thirdCommentAutocorrectRemoval && thirdCommentAutocorrectRemoval.length > 0) {
     return res.status(200).send({ message: thirdCommentAutocorrectRemoval, random: false });
   }
 
-  // final attempt, remove half of the end.
-  const finalAttempt = await getChatText(prom.slice(0, Math.ceil(prom.length / 2)), maxLimit);
-  const finalComment = formatText(finalAttempt);
-  if (finalComment && finalComment.length > 0) {
-    return res.status(200).send({ message: finalComment, random: false });
+  // remove half of the end.
+  const removeHalfAttempt = await getChatText(wordArray.slice(0, Math.ceil(wordArray.length / 2)), maxLimit);
+  const removeHalfComment = formatText(removeHalfAttempt);
+  if (removeHalfComment && removeHalfComment.length > 0) {
+    return res.status(200).send({ message: removeHalfComment, random: false });
+  }
+
+  // longest word final attempt
+  const longestWord = wordArray.reduce((prev, current) => prev.length > current.length ? prev : current);
+  const longestWordAttempt = await getChatText(longestWord, maxLimit);
+  const longestWordComment = formatText(longestWordAttempt);
+  if (longestWordComment && longestWordComment.length > 0) {
+    return res.status(200).send({ message: longestWordComment, random: false });
   }
 
   // finally send a random message, if we couldn't find one.
