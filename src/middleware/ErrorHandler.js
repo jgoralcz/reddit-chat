@@ -1,7 +1,7 @@
 const logger = require('log4js').getLogger();
 const { LOCAL } = require('../util/constants/environments');
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, _, res, next) => {
   if (res.headersSent) {
     return next(err);
   }

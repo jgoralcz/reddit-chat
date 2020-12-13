@@ -8,8 +8,8 @@ const entities = new Entities();
  * @returns {[string]} array of string text that has html codes transferred.
  */
 const formatText = (responses) => {
-  if (responses && responses.rows) {
-    return responses.rows.map((response) => entities.decode(response.comment));
+  if (responses && responses.map) {
+    return responses.map((response) => entities.decode(response.comment));
   }
   return [];
 };
